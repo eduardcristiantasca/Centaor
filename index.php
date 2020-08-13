@@ -25,7 +25,7 @@
         <div id="data">
             <!-- TITLE -->
 
-            <h2>CENTAOR</h2>
+            <a href="index.php"><h2 id="title"> CENTAOR </h2></a>
 
             <!-- SELECT LOGIN / REGISTER -->
             
@@ -38,6 +38,7 @@
             <!-- LOGIN FORM -->
 
             <?php
+             
                     if(isset($_SESSION['userId'])){
                         echo '
                         <form action="includes/logout.php"  method="post" id="form-logout" class="move-form">
@@ -48,7 +49,7 @@
 
             <form action="includes/logout.php" method="post" id="form-logout" class="move-form hide">
                 <button id="logout" name="logout" id="logout" type="submit" >Logout</button>
-            </form>';
+            </form>
 
             <form action="includes/login1.php"  method="post" id="form-login" class="move-form">
              
@@ -104,8 +105,42 @@
                     <input type="submit" value="Delete By ID" id="delete-submit" name="delete-submit">
                 </form>
             </div>
+            
+            <?php
+                require './includes/dbcinema.php';
 
-
+                if(isset($_SESSION['userId'])){
+                    if($_SESSION['username'] != "admin"){
+                        $userId = $_SESSION['userId'];
+                        $sql = "SELECT * FROM cart WHERE userId = '$userId'";
+                        $result = $conn->query($sql);  
+                        $exist = 0;
+                        while($row = $result->fetch_assoc()){
+                            $exist ++;
+                            if($result && $exist == 1)
+                                echo'
+                                <table id="cart" class="move-form">
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Date</th>
+                                    <th>Quantity</th>
+                                    <th class="left-padding">Total Price</th>
+                                </tr>';
+                            echo'
+                            <tr>
+                                <td>'.$row['movieTitle'].'</td>
+                                <td>'.$row['dateBuy'].'</td>
+                                <td>'.$row['quantity'].'</td>
+                                <td>$'.$row['totalPrice'].'.00</td>
+                            </tr>';
+                        }
+                        echo '</table>'; 
+                        
+                    }
+                }
+            ?>
+            <p id="load-tickets">Refresh to load your cart</p>
+        
             <!-- MODAL ADD MOVIE -->
             <!-- <form id="form-add-movie" class="modal" action="includes/add_movie1.php"  method="post" enctype="multipart/form-data"> -->
             <form id="form-add-movie" class="modal" enctype="multipart/form-data">
@@ -210,28 +245,31 @@
             <span id="filter">
 
                 <!-- PRICE FILTER -->
-
-                <span id="by-price" class="by-anim">
-                    <span id="descendent-order" class="order-icon"></span>
-                    <span class="by">Price</span>
-                    <span id="ascendent-order" class="order-icon"></span>
-                </span>
+                <form class="sort-by" action="index.php" method="get">
+                    <span id="by-price" class="by-anim">
+                        <span id="descendent-order" class="order-icon"></span>
+                            <span class="by" id="by-price"><button type="submit" name="sort-price" class="sort-button">Price</button> </span>
+                        <span id="ascendent-order" class="order-icon"></span>
+                    </span>
+                </form>
 
                 <!-- RATING FILTER -->
-
-                <span  id="by-rating" class="by-anim">
-                    <span id="descendent-order" class="order-icon"></span>
-                    <span id="by-rating" class="by">Rating</span>
-                    <span id="ascendent-order" class="order-icon"></span>
-                </span>
+                <form class="sort-by" action="index.php" method="get">
+                    <span  id="by-rating" class="by-anim">
+                        <span id="descendent-order" class="order-icon"></span>
+                            <span id="by-rating" class="by"><button type="submit" name="sort-rating" class="sort-button">Rating</button></span>
+                        <span id="ascendent-order" class="order-icon"></span>
+                    </span>
+                </form>
 
                 <!-- GENRE FILTER -->
-
-                <span  id="by-genre" class="by-anim">
-                    <span id="descendent-order" class="order-icon"></span>
-                    <span id="by-genre" class="by">Genre</span>
-                    <span id="ascendent-order" class="order-icon"></span>
-                </span>
+                <form class="sort-by" action="index.php" method="get">
+                    <span  id="by-genre" class="by-anim">
+                        <span id="descendent-order" class="order-icon"></span>
+                            <span id="by-genre" class="by"><button type="submit" name="sort-genre" class="sort-button">Genre</button></span>
+                        <span id="ascendent-order" class="order-icon"></span>
+                    </span>
+                </form>
             </span>
         </div>
         
@@ -240,8 +278,17 @@
         <p class="delete-message"></p>
         <?php
             require './includes/dbcinema.php';
-            
+
             $sql = "SELECT * FROM movies ORDER BY idMovie DESC";
+
+            if(isset($_GET['sort-price']))
+                $sql = "SELECT * FROM movies ORDER BY moviePrice ASC";
+
+            else if(isset($_GET['sort-rating']))
+                $sql = "SELECT * FROM movies ORDER BY movieRating DESC";
+
+            else if(isset($_GET['sort-genre']))
+                $sql = "SELECT * FROM movies ORDER BY movieGenre ASC";
 
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)){
@@ -250,33 +297,31 @@
             else{
                 mysqli_stmt_execute($stmt);
                 $result = mysqli_stmt_get_result($stmt);
-
                 while ($row = mysqli_fetch_assoc($result)){
-                   
                     echo '
-                <a href="movie.php?id='.$row["idMovie"].'&title='.$row["movieTitle"].'" id="movie-box" class="'.$row["idMovie"].'">
-                    <div id="movie-container">
-                    <div id="movie">
-                        <img src="img/'.$row["movieImg"].'" alt="" id="movie-image">
-                        <p id="price">$'.$row["moviePrice"].'.00</p>
-        
-                        <div id="movie-info"> 
-                            <p id="rating">Rating: '.$row["movieRating"].'</p>
-                            <p id="genre">'.$row["movieGenre"].'</p>
-                        </div>
-                    </div>
-                    <div id="movie-description">
-                        <p id="movie-title">'.$row["movieTitle"].'</p>
-                        <p id="description-text">'.$row["movieDescr"].'</p>
-                    </div>
-                </div>
-                
-                    <input type="submit" name="delete" class="deleteBtn" value="'.$row["idMovie"].'">
-               
-                </a>';
-                
+                        <a href="movie.php?id='.$row["idMovie"].'&title='.$row["movieTitle"].'" id="movie-box" class="'.$row["idMovie"].'">
+                            <div id="movie-container">
+                                <div id="movie">
+                                    <img src="img/'.$row["movieImg"].'" alt="" id="movie-image">
+                                    <p id="price">$'.$row["moviePrice"].'.00</p>
+                    
+                                    <div id="movie-info"> 
+                                        <p id="rating">Rating: '.$row["movieRating"].'</p>
+                                        <p id="genre">'.$row["movieGenre"].'</p>
+                                    </div>
+                                </div>
+                                <div id="movie-description">
+                                    <p id="movie-title">'.$row["movieTitle"].'</p>
+                                    <p id="description-text">'.$row["movieDescr"].'</p>
+                                </div>
+                            </div>
+                        
+                            <input type="submit" name="delete" class="deleteBtn" value="'.$row["idMovie"].'">
+                    
+                        </a>';
                 }
-            }            
+            }
+                      
         ?>
         </div>
 
@@ -374,22 +419,37 @@
         </script>
     
     <script>
-    // $("#email, #password").css("border-bottom","1px solid black");
 
-    
     var adminCheck = "<?php echo $_SESSION['username']; ?>";
-    console.log(adminCheck);
     if(adminCheck == "admin"){
+        var hide_buttons = document.getElementById("box-login-register");
+        var title = document.getElementById("title");
         var form_login = document.getElementById("form-login");
         var form_newsletter = document.getElementById("form-newsletter");
         var form_admin = document.getElementById("form-admin");
         
         // SHOW THE ADMIN CRUD FORM / HIDE OTHER
 
+        hide_buttons.style.display = "none";
         form_login.classList.add("form-login-show");
         form_newsletter.classList.add("newsletter-show");
         form_admin.style.display = "flex";
+        form_admin.style.marginLeft = "5vw";
+        title.style.width = "25vw";
+    }
+
+    else{
+        var hide_buttons = document.getElementById("box-login-register");
+        var form_login = document.getElementById("form-login");
+        var form_newsletter = document.getElementById("form-newsletter");
+        var title = document.getElementById("title");
         
+        // SHOW THE CART TABLE / HIDE OTHER
+
+        hide_buttons.style.display = "none";
+        form_login.classList.add("form-login-show");
+        form_newsletter.classList.add("newsletter-show");
+        title.style.width = "25vw";
     }
 
     // if (errorEmpty == true || errorUserMail == true || errorPass == true){
@@ -400,6 +460,6 @@
     //     $("#email, #password").val("");
     // }
 
-</script>
+    </script>
 </body>
 </html>

@@ -1,7 +1,6 @@
 <?php
     date_default_timezone_set('Europe/Bucharest');
     session_start();
-    // header("Refresh:0");
 ?>
 
 <!DOCTYPE html>
@@ -14,7 +13,7 @@
     <script src="./js/utilities.js"></script>
     <?php
         $title = $_GET['title'];
-        echo '<title>'.$title.'</title>';
+        echo '<title>Buy Ticket: '.$title.'</title>';
     ?>
     
 </head>
@@ -25,7 +24,7 @@
             
             require './includes/dbcinema.php';
             require './includes/comments.php';
-
+            
             $idMovie = $_GET['id'];
             $moviePrice = 0;
             $sql = "SELECT * FROM movies WHERE idMovie='$idMovie'";
@@ -66,16 +65,19 @@
                 echo '
                     
 
-                    <form id="buy-ticket-form" action="includes/buy_ticket.php" method="post">
+                    <form id="buy-ticket-form" action="includes/buy_ticket.php"  method="post">
                         
                         <div id="quantity-price-text">
                         <label id="quantity-text" for="quantity"><b>Quantity:</b></label>
                             <div class="quantity">
-                                <input type="number" id="quantity" name="quantity" min="1" max="9" step="1" value="1" disabled>  
+                                <input type="number" id="quantity" name="quantity" min="1" max="9" step="1" value="1">  
                             </div>
                             <span id="total-price">Total Price: <input type="text" id="quantity-price" name="quantity-price" value="'.$moviePrice.'"  >.00$</span>
                         </div>
-
+                        <input type="hidden" name="movieId" value="'.$idMovie.'">
+                        <input type="hidden" name="userId" value="'.$_SESSION['userId'].'">
+                        <input type="hidden" name="movieTitle" value="'.$title.'">
+                        <input type="hidden" name="dateBuy" value="'.date('Y-m-d H:i:s').'">
                         <label for="full-name"><b>Full Name:</b></label>
                         <input type="text" placeholder="Enter full name" name="full-name" id="full-name" >
             

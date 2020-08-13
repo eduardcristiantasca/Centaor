@@ -77,6 +77,11 @@ h2{
     width: 100%;
 }
 
+.sort-by{
+    margin-top: 4px;
+    background-color: white;
+}
+
 .by-anim{
     cursor: pointer;
     margin-left: 2vh;
@@ -310,6 +315,10 @@ button:focus{
     margin-bottom: -10vh;
 }
 
+/* #movie img {
+    object-fit: cover;
+} */
+
 #movie-header{
     width: 21vh;
     height: 30vh; 
@@ -402,7 +411,41 @@ a{
     transition: 1s;
     border-bottom: 1.5px solid rgba(0, 0, 128, 0.401);
 } */
+#cart{
+   position: relative;
+   top: 5vh;
+   margin: 0 auto;
+   /* min-width: 30vw; */
+   text-align: center;
+   background-color: white;
+   box-shadow: 0 0 10px 4px rgba(0, 0, 128, 0.2);
+   border-collapse: collapse;
+   
+}
 
+#cart th{
+    border-top: 1px solid rgba(0, 0, 128, 0.2);
+    border-bottom: 1px solid rgba(0, 0, 128, 0.2);
+    padding: 10px;
+}
+
+#cart td{
+    padding: 10px;
+    max-width: 130px;
+    border-bottom: 1px solid rgba(0, 0, 128, 0.2);
+}
+
+.left-padding{
+    padding-left: 20px;
+}
+
+#load-tickets{
+    display: none;
+    width: 100%;
+    margin-top: 30vh;
+    border-bottom: 1px solid rgba(255, 0, 0, 0.176);
+    text-align: center;
+}
 
 @keyframes colorful{
     100%{
@@ -571,6 +614,7 @@ ul li a:visited{
     flex-direction: column;
     justify-content: space-around;
     display: none;
+    margin-top: 5vh;
 }
 
 .hide{
@@ -820,6 +864,11 @@ textarea:focus{
 @media screen and (max-width: 650px){
     #search-bar{
         height: 12vh;
+        width: 95%;
+    }
+
+    #movie-box{
+        margin-left: -5px;
     }
 
     #filter{
@@ -829,4 +878,25 @@ textarea:focus{
     #movie-description{
         width: 50vw;
     }
+
+    #cart{
+        width: 95%;
+    }
+
+    #load-tickets{
+        width: 90%;
+        margin: 0 auto;
+        margin-top: 5vh;
+    }
+
+    
+}
+
+.sort-button, .sort-button:hover{
+    background-color: white;
+    outline: none;
+}
+
+.sort-button:hover{
+    border-bottom: 1px solid rgba(190, 190, 255, 0.667);
 }

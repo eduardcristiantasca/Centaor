@@ -60,7 +60,6 @@ function addMovie(movieComponent){
 // POPULATE MOVIE LIST
 
 var nrOfRows = Number($(".deleteBtn").val()) + 1;
-console.log(nrOfRows);
 
 
 // // CREATE COMPONENT FOR EACH MOVIE IN LIST

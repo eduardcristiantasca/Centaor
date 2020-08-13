@@ -23,7 +23,7 @@
         
             $sql = "DELETE FROM comments WHERE commentId = '$commentId'";
             $result = $conn->query($sql);
-            header("Location: movie.php?id=$movieId&title=$movieTitle");
+            // header("Location: movie.php?id=$movieId&title=$movieTitle");
         }
     }
 
@@ -51,33 +51,36 @@
             $sql2 = "SELECT * FROM users WHERE idUser='$id'";
             $result2 = $conn->query($sql2); 
             if($row2 = $result2->fetch_assoc())
-                echo '
-                    <div class="comment-box">
-                        <div class="comment-header">
-                            <p class="comment-username"><span class="username-itself">'.$row2['userName'].' - </span>'.$row['date'].'</p>';
-                            if(isset($_SESSION['userId']))
-                                if($_SESSION['userId'] == $row2['idUser'])
-                                    echo '
-                                        <form class="comment-control" method="POST" action="./includes/comment_edit.php">
-                                            <input type="hidden" name="commentId" value="'.$row['commentId'].'">
-                                            <input type="hidden" name="movieId" value="'.$row['movieId'].'">
-                                            <input type="hidden" name="movieTitle" value="'.$row['movieTitle'].'">
-                                            <input type="hidden" name="username" value="'.$row['userId'].'">
-                                            <input type="hidden" name="date" value="'.$row['date'].'">
-                                            <input type="hidden" name="comment" value="'.$row['comment'].'">
-                                            <button type="submit" class="comment-button">Edit</button>
-                                        </form>
-                                        <form class="comment-control" method="POST" action="'.deleteComments($conn).'">
-                                            <input type="hidden" name="commentId" value="'.$row['commentId'].'">
-                                            <input type="hidden" name="movieId" value="'.$row['movieId'].'">
-                                            <input type="hidden" name="movieTitle" value="'.$row['movieTitle'].'">
-                                            <button type="submit" name="delete-comment" class="comment-button red-back">Delete</button>
-                                        </form>';
+                if(isset($_SESSION['userId']))
+                    if($_SESSION['userId'] == $row2['idUser'] || $_SESSION['username'] == 'admin')
+                        echo '
+                            <div class="edit-delete-buttons">
+                                <form class="edit-button" method="POST" action="./includes/comment_edit.php">
+                                    <input type="hidden" name="commentId" value="'.$row['commentId'].'">
+                                    <input type="hidden" name="movieId" value="'.$row['movieId'].'">
+                                    <input type="hidden" name="movieTitle" value="'.$row['movieTitle'].'">
+                                    <input type="hidden" name="username" value="'.$row['userId'].'">
+                                    <input type="hidden" name="date" value="'.$row['date'].'">
+                                    <input type="hidden" name="comment" value="'.$row['comment'].'">
+                                    <button type="submit" class="comment-button">Edit</button>
+                                </form>
+                                <form class="delete-button" method="POST" action="'.deleteComments($conn).'">
+                                    <input type="hidden" name="commentId" value="'.$row['commentId'].'">
+                                    <input type="hidden" name="movieId" value="'.$row['movieId'].'">
+                                    <input type="hidden" name="movieTitle" value="'.$row['movieTitle'].'">
+                                    <button type="submit" name="delete-comment" class="comment-button red-back">Delete</button>
+                                </form>
+                            </div>';
+                            
+                        echo '
+                            <div class="comment-box">
+                                <div class="comment-header">
+                                    <p class="comment-username"><span class="username-itself">'.$row2['userName'].' - </span>'.$row['date'].'</p>';
                                             
-                    echo '
-                        </div>
-                            <p class="comment-user">'.nl2br($row['comment']).'</p>
-                    </div>';
+                        echo '
+                                </div>
+                                <p class="comment-user">'.nl2br($row['comment']).'</p>
+                            </div>';
         }
     }
 

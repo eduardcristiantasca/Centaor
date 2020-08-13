@@ -52,7 +52,7 @@ if (isset($_POST['submit_login'])){
                     session_start();
                     $_SESSION['userId'] = $row['idUser'];
                     $_SESSION['username'] = $row['userName'];
-                    // header("Location: ../index.php?login=succes");
+                    $_SESSION['email'] = $row['userEmail'];
                     // exit();
                     echo "<span class=\"error-color\">Login succes!</span>";
                 }
@@ -91,17 +91,34 @@ else{
     var show_logout = document.getElementById("form-logout");
 
     if(adminCheck == "admin"){
+        var hide_buttons = document.getElementById("box-login-register");
         var form_login = document.getElementById("form-login");
         var form_newsletter = document.getElementById("form-newsletter");
         var form_admin = document.getElementById("form-admin");
         
         
         // SHOW THE ADMIN CRUD FORM / HIDE OTHER
-
+        hide_buttons.style.display = "none";
         form_login.classList.add("form-login-show");
         form_newsletter.classList.add("newsletter-show");
         form_admin.style.display = "flex";
         show_logout.style.display = "flex";
+        form_admin.style.marginLeft = "5vw";
+        title.style.width = "25vw";
+    }
+
+    if(adminCheck != "admin"){
+        var hide_buttons = document.getElementById("box-login-register");
+        var form_login = document.getElementById("form-login");
+        var form_newsletter = document.getElementById("form-newsletter");
+        var load_tickets = document.getElementById("load-tickets");
+        console.log("refresh to");
+        // SHOW THE ADMIN CRUD FORM / HIDE OTHER
+        load_tickets.style.display = "block";
+        hide_buttons.style.display = "none";
+        form_login.classList.add("form-login-show");
+        form_newsletter.classList.add("newsletter-show");
+        title.style.width = "25vw";
     }
 
     if (errorEmpty == true || errorUserMail == true || errorPass == true){
